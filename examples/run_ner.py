@@ -158,7 +158,7 @@ def train(args, train_dataset, model, tokenizer, labels, pad_token_label_id):
     epochs_trained = 0
     steps_trained_in_current_epoch = 0
     # Check if continuing training from a checkpoint
-    if os.path.exists(args.model_name_or_path):
+    if os.path.exists(args.model_name_or_path) and args.is_checkpoint:
         # set global_step to gobal_step of last saved checkpoint from model path
         global_step = int(args.model_name_or_path.split("-")[-1].split("/")[0])
         epochs_trained = global_step // (len(train_dataloader) // args.gradient_accumulation_steps)
@@ -411,6 +411,7 @@ def main():
         required=True,
         help="Path to pre-trained model or shortcut name selected in the list: " + ", ".join(ALL_MODELS),
     )
+    parser.add_argument("--is_checkpoint", action="store_true", help="Whether to given model path is to treated as checkpoint. If given, training will be resumed from that checkpoint.")
     parser.add_argument(
         "--output_dir",
         default=None,
